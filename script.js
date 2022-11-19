@@ -26,145 +26,30 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
 
-
-
-
-
-
-
-
-
-// // Set view the center point: 11
-
-
-// // setup the tile layers with demo access token and add to map
-
-
-// // Hands on 2: add markers to map and bind popup
-// const singaporeMarker = L.marker(singapore);
-// singaporeMarker.addTo(map);
-// singaporeMarker.bindPopup("<p>Singapore</p>")
-
-// const singaporeZooMarker = L.marker(singaporeZoo);
-// singaporeZooMarker.addTo(map);
-// singaporeZooMarker.bindPopup("<p>Singapore Zoo</p>")
-
-// const singaporeDiscoveryMarker = L.marker(singaporeDiscovery);
-// singaporeDiscoveryMarker.addTo(map);
-// singaporeDiscoveryMarker.bindPopup("<p>Singapore Discovery Center</p>");
-
-// const jurongBirdParkMarker = L.marker(jurongBirdPark);
-// jurongBirdParkMarker.addTo(map);
-// jurongBirdParkMarker.bindPopup("<p>Jurong Bird Park</p>");
-
-// // singaporeMarker.addEventListener('click', function(){
-// //     alert("Singapore");
-// // })
-
-// let circle = L.circle([1.35166526, 103.773663572], {
-//     color: 'red',
-//     fillColor:"orange",
-//     fillOpacity:0.5,
-//     radius: 800
-// })
-
-// // add it to the map
-// circle.addTo(map);
-
-
-
-
-
-// function getRandomLatLng(map) {
-//     // get the boundaries of the map
-//     let bounds = map.getBounds();
-//     let southWest = bounds.getSouthWest();
-//     let northEast = bounds.getNorthEast();
-//     let lngSpan = northEast.lng - southWest.lng;
-//     let latSpan = northEast.lat - southWest.lat;
-
-//     let randomLng = Math.random() * lngSpan + southWest.lng;
-//     let randomLat = Math.random() * latSpan + southWest.lat;
-
-//     return [ randomLat, randomLng,];
-// }
-
-
-// for (let i = 0; i < 5; i++){
-//     const coordinate = getRandomLatLng(map);
-//     const randomMarker = L.marker(coordinate); 
-//     randomMarker.addTo(map);
-// }
-
-// create marker cluster
-// let markerClusterLayer = L.markerClusterGroup();
-
-// for (let i = 0; i < 1000; i++) {
-//     let pos = getRandomLatLng(map);
-//     L.marker(pos).addTo(markerClusterLayer);
-// }
-
-// markerClusterLayer.addTo(map);
-
-// getRandomLatLng(map)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// the map argument refers to the map which we create using Leaflet
-
-// create the layer group
-
-// add markers to the group
-
-
-// add the group layer to the map
-
-// add toggle button
-
 document.addEventListener('DOMContentLoaded' , async() =>{
 
-    const datapoints = await axios.get("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson");
+    const earthquakePoints = await axios.get("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson")
+    console.log(earthquakePoints)
 
-    // console.log(datapoints)
-
-    
-    const earthquakeCoordinates = datapoints.data.features[0].geometry.coordinates;
-    
+    const earthquakeCoordinates = earthquakePoints.data.features;
 
     let markerClusterLayer = L.markerClusterGroup();
 
-    for (let i of earthquakeCoordinates){
-        let lon = [i][0]
-        let lat = [i][1]
-        console.log(lat,lon)
-        // const lon = coordinates[i][0];
-        // const lat = coordinates[i][1];
+    for (let i = 0; i < earthquakeCoordinates.length; i++){
+        const lon = earthquakeCoordinates[i].geometry.coordinates[0];
+        const lat = earthquakeCoordinates[i].geometry.coordinates[1];
         let pos = [lat, lon];
         L.marker(pos).addTo(markerClusterLayer);
     
    
     }
 
-   
     markerClusterLayer.addTo(map);
+})
 
-} );
 
-
+// for (let i = 0; i < coordinates.length; i++){
+//     const lon = coordinates[i][0];
+//     const lat = coordinates[i][1];
+//     let pos = [lat, lon];
+//     L.marker(pos).addTo(markerClusterLayer);
